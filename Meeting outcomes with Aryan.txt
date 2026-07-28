@@ -1,0 +1,50 @@
+When you were trying to break into your first full-time role, what made the biggest difference - projects, DSA, networking?
+- both projects and DSA keep equally
+
+At your company, what separates an average React/Node developer from a strong one?
+- take to go means take the responsibilities of work that i will do it and stay crurious about learning new things and asking
+   questions from your seniors, mentors etc...
+
+What mistakes do you see most MERN developers making in interviews?
+- not asked
+
+How much importance does your team give to performance optimization in React apps?
+- very important
+
+How deeply do interviewers test React internals (reconciliation, hooks lifecycle, rendering behavior)?
+- So, basically they ask for js foundations and performance knowledge you got and primarly check your problem solving 
+  ability
+
+Do you prefer Redux, Context API, or server state tools like React Query in production?
+- Yes, in productions redux and context api are present and they use it at very good level
+
+-- Backend
+
+How much weight is given to backend architecture knowledge during interviews?
+- as a fresher not much but for a 2-3 years experienced guy it becomes must
+
+Do you expect developers to understand scalability concepts like load balancing, caching, rate limiting?
+- yes, definetly
+
+How deeply are database design and indexing tested?
+- not asked
+
+Does your team use microservices or a monolithic architecture?
+- yes, they use them
+
+-- MERN future
+
+Is MERN still in high demand in your company, or are companies shifting toward other stacks?
+- MERN is still in high demand for around 2-4 years
+
+If you were hiring a junior MERN developer today, what would you absolutely expect them to know?
+- basics of MERN, and good understanding of companies requirements
+
+What would make you confident referring someone internally?
+- not asked
+
+--> Key take aways 
+- Understand the flow of code then writting code
+- The developer who thinks more and code less is way greater than the developer who codes more and thinks less
+- Strong your js fundamentals - they help you to run for long time
+- DSA is important for a fresher
