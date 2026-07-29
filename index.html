@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repository Documentation Portal</title>
+  <meta name="description" content="Dynamic GitHub Pages documentation portal automatically discovering and presenting repository resources.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CDN External Libraries -->
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Marked.js for Markdown Parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <!-- DOMPurify for HTML Sanitization -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+  
+  <!-- Highlight.js for Code Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  
+  <!-- KaTeX for Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Reading Progress Bar (Active in Reader View) -->
+  <div id="reading-progress-container" class="reading-progress-container hidden">
+    <div id="reading-progress-bar" class="reading-progress-bar"></div>
+  </div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-layout">
+    
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <!-- Brand / Repo Name -->
+        <a href="./" class="brand-link" id="brand-link" title="Documentation Home">
+          <div class="brand-icon">
+            <i data-lucide="book-open"></i>
+          </div>
+          <div class="brand-text">
+            <span class="repo-owner" id="nav-repo-owner">Dileep-kumawat</span>
+            <span class="brand-separator">/</span>
+            <span class="repo-name" id="nav-repo-name">Resources-Documentations</span>
+          </div>
+        </a>
+
+        <!-- Header Quick Search Bar -->
+        <div class="header-search-box">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="header-search-input" placeholder="Search documentation... (Ctrl + K)" aria-label="Search documentation">
+          <kbd class="search-shortcut">⌘K</kbd>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <button id="btn-stats" class="icon-btn" title="Repository Statistics" aria-label="Statistics">
+            <i data-lucide="bar-chart-3"></i>
+          </button>
+          
+          <button id="btn-refresh" class="icon-btn" title="Refresh Tree Cache" aria-label="Refresh">
+            <i data-lucide="refresh-cw" id="refresh-icon"></i>
+          </button>
+
+          <button id="btn-pat" class="icon-btn" title="GitHub Access Token / Rate Limit" aria-label="Token Settings">
+            <i data-lucide="key"></i>
+          </button>
+
+          <button id="btn-theme" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+
+          <a href="#" id="github-repo-link" target="_blank" rel="noopener noreferrer" class="icon-btn github-btn" title="View Source on GitHub">
+            <i data-lucide="github"></i>
+          </a>
+
+          <!-- Mobile Menu Toggle -->
+          <button id="btn-mobile-sidebar" class="icon-btn mobile-only" title="Toggle Sidebar" aria-label="Toggle Sidebar">
+            <i data-lucide="menu"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="hero-section" id="hero-section">
+      <div class="hero-background">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+      </div>
+      <div class="hero-container">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span id="hero-branch-badge">Branch: main</span>
+        </div>
+        
+        <h1 class="hero-title" id="hero-repo-title">
+          Resources & Documentations
+        </h1>
+        
+        <p class="hero-description" id="hero-repo-desc">
+          Interactive documentation portal dynamically discovering and indexing repository notes, PDFs, guides, code snippets, and diagrams.
+        </p>
+
+        <!-- Dynamic Hero Search Bar -->
+        <div class="hero-search-wrapper">
+          <div class="hero-search-box">
+            <i data-lucide="search" class="hero-search-icon"></i>
+            <input type="text" id="hero-search-input" placeholder="Search by name, extension, folder, or topic..." aria-label="Search resources">
+            <button id="hero-search-clear" class="search-clear-btn hidden" title="Clear Search">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Repository Meta Stats -->
+        <div class="hero-stats" id="hero-stats">
+          <div class="stat-pill">
+            <i data-lucide="file-text"></i>
+            <span id="stat-total-files">0 Files</span>
+          </div>
+          <div class="stat-pill">
+            <i data-lucide="folder"></i>
+            <span id="stat-total-folders">0 Folders</span>
+          </div>
+          <div class="stat-pill">
+            <i data-lucide="clock"></i>
+            <span id="stat-last-updated">Updated: --</span>
+          </div>
+          <div class="stat-pill">
+            <i data-lucide="hard-drive"></i>
+            <span id="stat-repo-size">Size: --</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Workspace Container -->
+    <main class="main-container">
+      
+      <!-- Left Sidebar (Tree View & Filters) -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">
+            <i data-lucide="folder-tree"></i>
+            <span>Explorer</span>
+          </div>
+          <div class="sidebar-tree-actions">
+            <button id="btn-tree-expand" class="mini-btn" title="Expand All Folders">
+              <i data-lucide="chevrons-down"></i>
+            </button>
+            <button id="btn-tree-collapse" class="mini-btn" title="Collapse All Folders">
+              <i data-lucide="chevrons-up"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sort and View Controls -->
+        <div class="sidebar-controls">
+          <label for="sort-select" class="control-label">Sort By:</label>
+          <select id="sort-select" class="styled-select" aria-label="Sort resources">
+            <option value="name-asc">Name (A to Z)</option>
+            <option value="name-desc">Name (Z to A)</option>
+            <option value="ext">Extension</option>
+            <option value="folder">Folder Path</option>
+            <option value="size-desc">Size (Largest)</option>
+            <option value="size-asc">Size (Smallest)</option>
+          </select>
+        </div>
+
+        <!-- File Type Filter Chips -->
+        <div class="filter-section">
+          <div class="filter-title">Filter by Type</div>
+          <div class="filter-chips" id="filter-chips">
+            <button class="chip active" data-type="all">All</button>
+            <button class="chip" data-type="md"><i data-lucide="file-code-2"></i> Markdown</button>
+            <button class="chip" data-type="pdf"><i data-lucide="file-text"></i> PDF</button>
+            <button class="chip" data-type="html"><i data-lucide="code"></i> HTML</button>
+            <button class="chip" data-type="image"><i data-lucide="image"></i> Images</button>
+            <button class="chip" data-type="txt"><i data-lucide="file-lines"></i> Text</button>
+          </div>
+        </div>
+
+        <!-- Recursive Directory Folder Tree Container -->
+        <div class="sidebar-tree-container" id="sidebar-tree-container">
+          <div class="tree-loading-skeleton">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line indent-1"></div>
+            <div class="skeleton-line indent-2"></div>
+            <div class="skeleton-line indent-1"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Central Content Region -->
+      <section class="content-region" id="content-region">
+        
+        <!-- Interactive Breadcrumbs Bar -->
+        <nav class="breadcrumbs-bar" id="breadcrumbs-bar" aria-label="Breadcrumbs">
+          <ol class="breadcrumb-list" id="breadcrumb-list">
+            <li class="breadcrumb-item">
+              <a href="#" class="breadcrumb-link" data-path="">
+                <i data-lucide="home"></i> Home
+              </a>
+            </li>
+          </ol>
+          
+          <div class="active-filter-badge hidden" id="active-filter-badge">
+            <span id="filter-badge-text">Folder: Notes</span>
+            <button id="btn-clear-filter" class="badge-clear" title="Clear Filter">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </nav>
+
+        <!-- VIEW 1: Resource Grid & File Cards -->
+        <div id="grid-view" class="view-panel active-view">
+          <div class="grid-header">
+            <div class="result-count" id="result-count">Showing 0 items</div>
+            <div class="view-toggles">
+              <button id="btn-view-grid" class="icon-btn active" title="Grid View">
+                <i data-lucide="layout-grid"></i>
+              </button>
+              <button id="btn-view-list" class="icon-btn" title="List View">
+                <i data-lucide="list"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cards Grid Container -->
+          <div class="cards-grid" id="cards-grid">
+            <!-- Loading Skeleton Cards -->
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+          </div>
+
+          <!-- Empty Results State -->
+          <div id="empty-state" class="empty-state hidden">
+            <div class="empty-icon">
+              <i data-lucide="search-x"></i>
+            </div>
+            <h3>No resources found</h3>
+            <p id="empty-state-msg">No files matched your search or filter criteria. Try searching for something else.</p>
+            <button id="btn-reset-search" class="primary-btn">
+              <i data-lucide="rotate-ccw"></i> Reset Filters & Search
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW 2: Markdown Reader -->
+        <div id="reader-view" class="view-panel hidden">
+          <div class="reader-header-bar">
+            <button id="btn-reader-back" class="secondary-btn">
+              <i data-lucide="arrow-left"></i> Back to Explorer
+            </button>
+
+            <div class="reader-doc-info">
+              <span class="reader-doc-type" id="reader-doc-type">MARKDOWN</span>
+              <h2 class="reader-doc-title" id="reader-doc-title">Document Title</h2>
+              <span class="reader-doc-path" id="reader-doc-path">path/to/file.md</span>
+            </div>
+
+            <div class="reader-actions">
+              <span class="reading-time-pill" id="reader-reading-time">
+                <i data-lucide="clock"></i> ~3 min read
+              </span>
+              <button id="btn-copy-raw-link" class="icon-btn" title="Copy Raw Link">
+                <i data-lucide="link"></i>
+              </button>
+              <a id="btn-open-raw-file" href="#" target="_blank" class="icon-btn" title="Open Raw File on GitHub">
+                <i data-lucide="external-link"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Reader Content Grid Layout (Main Content + Sticky TOC) -->
+          <div class="reader-layout">
+            <!-- Main Parsed Markdown Content -->
+            <article class="markdown-body-container" id="markdown-body-container">
+              <div id="markdown-content" class="markdown-body">
+                <!-- Dynamic HTML Content Injected Here -->
+              </div>
+            </article>
+
+            <!-- Table of Contents Sidebar -->
+            <aside class="toc-sidebar" id="toc-sidebar">
+              <div class="toc-title">
+                <i data-lucide="list-tree"></i>
+                <span>On This Page</span>
+              </div>
+              <nav class="toc-nav" id="toc-nav">
+                <!-- Dynamic TOC links injected here -->
+              </nav>
+            </aside>
+          </div>
+        </div>
+
+        <!-- VIEW 3: Embedded PDF Viewer -->
+        <div id="pdf-view" class="view-panel hidden">
+          <div class="pdf-header-bar">
+            <button id="btn-pdf-back" class="secondary-btn">
+              <i data-lucide="arrow-left"></i> Back to Explorer
+            </button>
+            <div class="pdf-info">
+              <i data-lucide="file-text" class="pdf-icon"></i>
+              <span class="pdf-title" id="pdf-view-title">Document.pdf</span>
+              <span class="pdf-size-badge" id="pdf-view-size">2.4 MB</span>
+            </div>
+            <div class="pdf-actions">
+              <a id="btn-pdf-open-tab" href="#" target="_blank" class="primary-btn">
+                <i data-lucide="external-link"></i> Open in New Tab
+              </a>
+              <a id="btn-pdf-download" href="#" download class="secondary-btn">
+                <i data-lucide="download"></i> Download
+              </a>
+            </div>
+          </div>
+          <div class="pdf-iframe-container">
+            <iframe id="pdf-iframe" title="PDF Document Viewer"></iframe>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          <span id="footer-repo-name">Dileep-kumawat/Resources-Documentations</span>
+          <span class="footer-dot">•</span>
+          <span>Powered by GitHub Pages & GitHub REST API</span>
+        </div>
+        <div class="footer-right">
+          <span id="footer-indexed-count">Indexed: 0 Files</span>
+          <span class="footer-dot">•</span>
+          <span>Version 1.0.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Image Lightbox Modal -->
+  <div id="image-modal" class="modal-overlay hidden" tabindex="-1" role="dialog" aria-modal="true" aria-label="Image Viewer">
+    <div class="lightbox-header">
+      <div class="lightbox-title-box">
+        <i data-lucide="image" class="lightbox-icon"></i>
+        <span id="lightbox-filename">image.png</span>
+        <span id="lightbox-dim" class="lightbox-dim-badge">-- x --</span>
+      </div>
+      
+      <div class="lightbox-toolbar">
+        <button id="btn-zoom-in" class="lightbox-btn" title="Zoom In (+)">
+          <i data-lucide="zoom-in"></i>
+        </button>
+        <button id="btn-zoom-out" class="lightbox-btn" title="Zoom Out (-)">
+          <i data-lucide="zoom-out"></i>
+        </button>
+        <button id="btn-zoom-reset" class="lightbox-btn" title="Reset Zoom">
+          <i data-lucide="rotate-ccw"></i>
+        </button>
+        <a id="btn-image-open-tab" href="#" target="_blank" class="lightbox-btn" title="Open Full Resolution">
+          <i data-lucide="external-link"></i>
+        </a>
+        <button id="btn-lightbox-close" class="lightbox-btn close-btn" title="Close Lightbox (Esc)">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="lightbox-body" id="lightbox-body">
+      <img id="lightbox-img" src="" alt="Full resolution preview">
+    </div>
+  </div>
+
+  <!-- Repository Statistics Modal -->
+  <div id="stats-modal" class="modal-overlay hidden" tabindex="-1" role="dialog" aria-modal="true" aria-label="Repository Statistics">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="pie-chart"></i>
+          <span>Repository Analytics & Index Stats</span>
+        </div>
+        <button id="btn-stats-close" class="icon-btn" title="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrapper blue">
+              <i data-lucide="files"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-total">0</div>
+            <div class="stat-label">Total Files</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper purple">
+              <i data-lucide="file-code-2"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-md">0</div>
+            <div class="stat-label">Markdown Files</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper red">
+              <i data-lucide="file-text"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-pdf">0</div>
+            <div class="stat-label">PDF Documents</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper orange">
+              <i data-lucide="code"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-html">0</div>
+            <div class="stat-label">HTML Notes</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper emerald">
+              <i data-lucide="image"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-img">0</div>
+            <div class="stat-label">Images & Media</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper amber">
+              <i data-lucide="folder"></i>
+            </div>
+            <div class="stat-value" id="modal-stat-folders">0</div>
+            <div class="stat-label">Total Folders</div>
+          </div>
+        </div>
+
+        <div class="stats-info-box">
+          <h4>Cache & Connection Status</h4>
+          <p id="modal-cache-status">Tree fetched via GitHub REST API.</p>
+          <p id="modal-last-synced">Last Synced: Just now</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GitHub Personal Access Token / Rate Limit Modal -->
+  <div id="pat-modal" class="modal-overlay hidden" tabindex="-1" role="dialog" aria-modal="true" aria-label="GitHub Access Token">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="key"></i>
+          <span>GitHub API & Rate Limit Settings</span>
+        </div>
+        <button id="btn-pat-close" class="icon-btn" title="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          GitHub limits unauthenticated API requests to 60 per hour per IP. If you encounter rate limits or have a private repository, enter a GitHub Personal Access Token (PAT) with read permissions below.
+        </p>
+
+        <div class="form-group">
+          <label for="pat-input">GitHub Personal Access Token (Optional)</label>
+          <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="styled-input">
+        </div>
+
+        <div class="modal-actions">
+          <button id="btn-pat-save" class="primary-btn">Save Token & Reload Tree</button>
+          <button id="btn-pat-clear" class="secondary-btn">Clear Token</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Application Main Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
